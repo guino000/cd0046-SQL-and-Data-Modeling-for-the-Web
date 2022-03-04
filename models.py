@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
@@ -25,19 +27,31 @@ class Artist(db.Model):
     facebook_link = db.Column(db.String(120))
     website = db.Column(db.String(120))
     seeking_venue = db.Column(db.Boolean)
-    seeking_description = db.column(db.String(500))
+    seeking_description = db.Column(db.String(500))
+    shows = db.relationship('Show', backref='artist')
 
-
-venue_artist = db.Table('shows',
-                        db.Column('artist_id', db.Integer, db.ForeignKey('Artist.id'), primary_key=True),
-                        db.Column('venue_id', db.Integer, db.ForeignKey('Venue.id'), primary_key=True))
+    def as_dict(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'city': self.city,
+            'state': self.state,
+            'phone': self.phone,
+            'image_link': self.image_link,
+            'facebook_link': self.facebook_link,
+            'genres': self.genres,
+            'website': self.website,
+            'seeking_venue': self.seeking_venue,
+            'seeking_description': self.seeking_description,
+            'shows': self.shows
+        }
 
 
 class Venue(db.Model):
     __tablename__ = 'Venue'
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String)
+    name = db.Column(db.String(120))
     city = db.Column(db.String(120))
     state = db.Column(db.String(120))
     address = db.Column(db.String(120))
@@ -48,8 +62,7 @@ class Venue(db.Model):
     website = db.Column(db.String(120))
     seeking_talent = db.Column(db.Boolean)
     seeking_description = db.Column(db.String(500))
-    artists = db.relationship('Artist', secondary=venue_artist,
-                              backref=db.backref('Venue', lazy=True))
+    shows = db.relationship('Show', backref='venue')
 
     def as_dict(self):
         return {
@@ -65,5 +78,5 @@ class Venue(db.Model):
             'website': self.website,
             'seeking_talent': self.seeking_talent,
             'seeking_description': self.seeking_description,
-            'artists': self.artists,
+            'shows': self.shows,
         }
