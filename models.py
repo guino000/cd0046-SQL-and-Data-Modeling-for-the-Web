@@ -8,10 +8,16 @@ db = SQLAlchemy()
 class Show(db.Model):
     __tablename__ = 'Show'
 
-    id = db.Column(db.Integer, primary_key=True)
     artist_id = db.Column(db.Integer, db.ForeignKey('Artist.id'), primary_key=True)
     venue_id = db.Column(db.Integer, db.ForeignKey('Venue.id'), primary_key=True)
-    start_time = db.Column(db.DateTime)
+    start_time = db.Column(db.String(200))
+
+    def as_dict(self):
+        return {
+            'artist_id': self.artist_id,
+            'venue_id': self.venue_id,
+            'start_time': self.start_time
+        }
 
 
 class Artist(db.Model):
