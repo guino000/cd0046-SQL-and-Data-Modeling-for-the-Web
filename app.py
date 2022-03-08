@@ -39,7 +39,7 @@ migrate = Migrate(app, db)
 # ----------------------------------------------------------------------------#
 
 def format_datetime(value, format='medium'):
-    date = dateutil.parser.parse(value)
+    date = dateutil.parser.parse(str(value))
     if format == 'full':
         format = "EEEE MMMM, d, y 'at' h:mma"
     elif format == 'medium':
@@ -126,9 +126,9 @@ def show_venue(venue_id):
     # Done: replace with real venue data from the venues table, using venue_id
     venue = Venue.query.get(venue_id).as_dict()
     venue['genres'] = [genre for genre in venue['genres'].split(',')]
-    venue['past_shows'] = dict(Show.query.filter(Show.start_time <= datetime.now()).all())
+    venue['past_shows'] = Show.query.filter(Show.start_time <= datetime.now()).all()
     venue['past_shows_count'] = Show.query.filter(Show.start_time <= datetime.now(), Show.venue_id == venue_id).count()
-    venue['upcoming_shows'] = dict(Show.query.filter(Show.start_time > datetime.now()).all())
+    venue['upcoming_shows'] = Show.query.filter(Show.start_time > datetime.now()).all()
     venue['upcoming_shows_count'] = Show.query.filter(Show.start_time > datetime.now(),
                                                       Show.venue_id == venue_id).count()
     return render_template('pages/show_venue.html', venue=venue)

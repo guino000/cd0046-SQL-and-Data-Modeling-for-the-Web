@@ -10,13 +10,13 @@ class Show(db.Model):
 
     artist_id = db.Column(db.Integer, db.ForeignKey('Artist.id'), primary_key=True)
     venue_id = db.Column(db.Integer, db.ForeignKey('Venue.id'), primary_key=True)
-    start_time = db.Column(db.String(200))
+    start_time = db.Column(db.DateTime)
 
     def as_dict(self):
         return {
             'artist_id': self.artist_id,
             'venue_id': self.venue_id,
-            'start_time': self.start_time
+            'start_time': str(self.start_time)
         }
 
 
